@@ -7,6 +7,7 @@ import json
 import authenticate
 import follower
 import mentions
+import logging
 
 
 seed = []
@@ -18,10 +19,11 @@ def create_seed(init_file_name):
 
     # each line in f is a twitter username
     f = open(init_file_name,'r')
+    logging.info('Reading initial file...')
     for line in f:
         id = line.split(' ',1)[0]
-        print(id)
-        seed.append(line.split(' ',1)[0])
+        logging.info(str(id))
+        seed.append(id)
 
     return seed
 
@@ -30,7 +32,7 @@ def start_collection(depth):
 
     for account in seed:
         follower.get_followers(api,account,depth,0)
-        #mentions.mine_mentions(account)
+        mentions.get_mentions(api,account)
 
 
 
@@ -47,6 +49,8 @@ if __name__ == '__main__':
 
     print(depth)
     print(f)
+
+    logging.basicConfig(filename='crawler_log.log',filemode='w',level=logging.DEBUG)
 
     create_seed(f)
     start_collection(depth)
