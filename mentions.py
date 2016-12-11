@@ -1,40 +1,62 @@
-# -*- coding: utf-8 -*-
 import os
 import time
-import json
 import tweepy
 import csv
-from collections import Counter
-from datetime import datetime
 import logging
+from datetime import datetime
 
 USER_DIR = 'twitter-mentions'
 
 def get_mentions(api,screen_name):
 
-    alltweets = []
     userfname = os.path.join(USER_DIR, str(screen_name) + '.csv')
     if not os.path.exists(userfname):
-        print('Retrieving mentions for user %s' % str(screen_name))
         while True:
             try:
 
+                alltweets = []
                 new_tweets = api.user_timeline(screen_name=screen_name, count=200)
-
+                # saves the first 200 tweets
                 alltweets.extend(new_tweets)
 
-                mentions = []
+                # saves the id of the oldest tweet
+                oldest = alltweets[-1].id - 1
+
+                fhandle = open(userfname,'w')
+                #file handle to dump the mention
+                count = 0
+                # keep grabbing tweets until there are no tweets left to grab
+                while len(new_tweets ) > 0 and count<5:
+                    print("getting %s next set of tweets..." % str(count))
+                    logging.info("getting %s next set of tweets" % str(count))
+
+                    # all subsequent requests use the max_id param to prevent duplicates
+                    new_tweets = api.user_timeline(screen_name=screen_name, count=200, max_id=oldest)
+
+                    # save most recent tweets
+                    alltweets.extend(new_tweets)
+
+                    # update the id of the oldest tweet less one
+                    oldest = alltweets[-1].id - 1
+
+                    print("...%s tweets downloaded so far" % (len(alltweets)))
+                    count += 1
+
+                writer = csv.writer(fhandle)
                 for tweets in alltweets:
-                    for tweet in tweets.text.split():
-                        if tweet.startswith('@'):
-                            mentions.append(tweet[1:].rstrip(',.:;!'))
+                    str_tweets = str(tweets.text)
+                    date = tweets.created_at
 
-                dict = Counter(mentions)
 
-                with open(userfname, 'w') as outf:
-                    writer = csv.writer(outf)
-                    for key,val in dict.items():
-                        writer.writerow([key, val])
+
+                    #date of tweets and each mention is collected
+                    for tweet in str_tweets.split():
+                        tweet.strip()
+                        if tweet[0] == '@':
+                            mention = tweet[1:].rstrip(',.:;!')
+
+                            writer.writerow([mention,str(date.date()),str(date.time())])
+                fhandle.close()
                 break
 
             except tweepy.TweepError as error:

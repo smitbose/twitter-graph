@@ -45,6 +45,7 @@ def get_followers(api,centre, max_depth=1, current_depth=0):
 
                 with open(userfname,'w') as outf:
                     outf.write(json.dumps(d,indent=1))
+                    outf.close()
 
                 for follower in follower_names:
                     get_followers(api,follower,max_depth,current_depth+1)

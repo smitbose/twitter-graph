@@ -10,6 +10,9 @@ import mentions
 import logging
 
 
+USER_DIR = 'twitter-followers'
+MENTION_DIR = 'twitter-mentions'
+
 seed = []
 
 api = authenticate.start_auth()
@@ -17,14 +20,25 @@ api = authenticate.start_auth()
 # create a
 def create_seed(init_file_name):
 
+    # clearing the user and mention directories
+    for the_file in os.listdir(USER_DIR):
+        file_path = os.path.join(USER_DIR,the_file)
+        if os.path.isfile(file_path):
+            os.unlink(file_path)
+
+    for the_file in os.listdir(MENTION_DIR):
+        file_path = os.path.join(MENTION_DIR, the_file)
+        if os.path.isfile(file_path):
+            os.unlink(file_path)
+
     # each line in f is a twitter username
     f = open(init_file_name,'r')
     logging.info('Reading initial file...')
     for line in f:
-        id = line.split(' ',1)[0]
+        id = line.split(' ',1)[0].strip()
         logging.info(str(id))
-        seed.append(id)
-
+        seed.append(str(id))
+    f.close()
     return seed
 
 
