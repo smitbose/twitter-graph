@@ -3,7 +3,6 @@ import json
 import time
 import following
 import os
-
 USER_DIR = 'twitter-followings'
 
 def minefriends(api,centre):

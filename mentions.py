@@ -15,7 +15,7 @@ def get_mentions(api,screen_name):
             try:
 
                 alltweets = []
-                new_tweets = api.user_timeline(screen_name=screen_name, count=200)
+                new_tweets = api.user_timeline(screen_name=screen_name, count=200,include_rts=False)
                 # saves the first 200 tweets
                 alltweets.extend(new_tweets)
 
@@ -31,7 +31,7 @@ def get_mentions(api,screen_name):
                     logging.info("getting %s next set of tweets" % str(count))
 
                     # all subsequent requests use the max_id param to prevent duplicates
-                    new_tweets = api.user_timeline(screen_name=screen_name, count=200, max_id=oldest)
+                    new_tweets = api.user_timeline(screen_name=screen_name, count=200, max_id=oldest,include_rts=False)
 
                     # save most recent tweets
                     alltweets.extend(new_tweets)
