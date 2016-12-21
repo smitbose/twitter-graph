@@ -1,18 +1,20 @@
 import tweepy
 import time
 from datetime import datetime
+import logging
+
 
 def get_following(api,centre):
 
-    followers = []
+    following = []
     while True:
         try:
-            #i = 1
+            i = 1
             for friends in tweepy.Cursor(api.friends,screen_name=centre,count=200).items():
-                #print i,friends.screen_name
-                #i = i+1
-                followers.append(friends.screen_name)
-                if i%200 == 0:
+                # print i,friends.screen_name
+                i = i+1
+                following.append(friends.screen_name)
+                if i % 200 == 0:
                     time.sleep(60)
             break
         except tweepy.TweepError as error:
@@ -30,4 +32,4 @@ def get_following(api,centre):
                 time.sleep(15 * 60 + 15)
         continue
 
-    return followers
+    return following

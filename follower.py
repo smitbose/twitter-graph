@@ -10,15 +10,13 @@ USER_DIR = 'twitter-followers'
 
 def get_followers(api,centre, max_depth=1, current_depth=0):
 
-
-
     if current_depth >= max_depth:
         return
 
     userfname = os.path.join(USER_DIR,str(centre)+'.json')
 
     if not os.path.exists(userfname):
-        #mine follower list for user
+        # mine follower list for user
 
         print('Retrieving details for user %s' % str(centre))
         logging.info('Retrieving details for uer %s' % str(centre))

@@ -45,15 +45,15 @@ def create_seed(init_file_name):
 def start_collection(depth):
 
     for account in seed:
-        follower.get_followers(api,account,depth,0)
-        mentions.get_mentions(api,account)
+        follower.get_followers(api, account, depth, 0)
+        mentions.get_mentions(api, account)
 
 
 
 if __name__ == '__main__':
     ap = argparse.ArgumentParser()
-    ap.add_argument("-d","--depth",required=True,help="Depth upto which to traverse the follower list")
-    ap.add_argument("-f","--initfile",required=True,help="Initial seed")
+    ap.add_argument("-d","--depth", required=True, help="Depth upto which to traverse the follower list")
+    ap.add_argument("-f","--initfile", required=True, help="Initial seed")
 
 
     args = vars(ap.parse_args())
@@ -64,7 +64,7 @@ if __name__ == '__main__':
     print(depth)
     print(f)
 
-    logging.basicConfig(filename='crawler_log.log',filemode='w',level=logging.DEBUG)
+    logging.basicConfig(filename='crawler_log.log',filemode='w', level=logging.DEBUG)
 
     create_seed(f)
     start_collection(depth)
