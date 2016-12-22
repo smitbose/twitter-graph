@@ -15,7 +15,7 @@ def get_mentions(api,screen_name):
             try:
 
                 alltweets = []
-                new_tweets = api.user_timeline(screen_name=screen_name, count=200,include_rts=False)
+                new_tweets = api.user_timeline(screen_name=screen_name, count=200,include_rts=True)
                 # saves the first 200 tweets
                 alltweets.extend(new_tweets)
 
@@ -31,7 +31,7 @@ def get_mentions(api,screen_name):
                     logging.info("getting %s next set of tweets" % str(count))
 
                     # all subsequent requests use the max_id param to prevent duplicates
-                    new_tweets = api.user_timeline(screen_name=screen_name, count=200, max_id=oldest,include_rts=False)
+                    new_tweets = api.user_timeline(screen_name=screen_name, count=200, max_id=oldest,include_rts=True)
 
                     # save most recent tweets
                     alltweets.extend(new_tweets)
@@ -46,16 +46,19 @@ def get_mentions(api,screen_name):
                 for tweets in alltweets:
                     str_tweets = str(tweets.text)
                     date = tweets.created_at
+                    if str_tweets.startswith('RT'):
+                        tweet = str_tweets.split()
+                        retweet = tweet[1][1:].rstrip(',.:;!')
 
-
-
+                        writer.writerow([retweet,str(date.date()),str(date.time())])
+                    else:
                     #date of tweets and each mention is collected
-                    for tweet in str_tweets.split():
-                        tweet.strip()
-                        if tweet[0] == '@':
-                            mention = tweet[1:].rstrip(',.:;!')
+                        for tweet in str_tweets.split():
+                            tweet.strip()
+                            if tweet[0] == '@':
+                                mention = tweet[1:].rstrip(',.:;!')
 
-                            writer.writerow([mention,str(date.date()),str(date.time())])
+                                writer.writerow([mention,str(date.date()),str(date.time())])
                 fhandle.close()
                 break
 
