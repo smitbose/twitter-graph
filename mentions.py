@@ -27,8 +27,7 @@ def get_mentions(api, screen_name):
                 count = 0
                 # keep grabbing tweets until there are no tweets left to grab
                 while len(new_tweets) > 0 and count < 5:
-                    print("getting %s next set of tweets..." % str(count))
-                    logging.info("getting %s next set of tweets" % str(count))
+                    logging.info("getting %s next set of tweets..." % str(count))
 
                     # all subsequent requests use the max_id param to prevent duplicates
                     new_tweets = api.user_timeline(screen_name=screen_name, count=200, max_id=oldest, include_rts=True)
@@ -39,7 +38,7 @@ def get_mentions(api, screen_name):
                     # update the id of the oldest tweet less one
                     oldest = alltweets[-1].id - 1
 
-                    print("...%s tweets downloaded so far" % (len(alltweets)))
+                    logging.info("...%s tweets downloaded so far" % (len(alltweets)))
                     count += 1
 
                 writer = csv.writer(fhandle)
@@ -74,7 +73,7 @@ def get_mentions(api, screen_name):
                 if str(error) == "[{'message': 'Rate limit exceeded', 'code': 88}]" or str(
                         error) == "[{'code': 88, 'message': 'Rate limit exceeded'}]":
                     print('Rate limited. Sleeping for 15 minutes.')
-                    logging.debug('Rate limit exceeded at %s' % str(datetime.now()))
+                    logging.info('Rate limit exceeded at %s' % str(datetime.now()))
                     time.sleep(15 * 60 + 15)
     else:
         print("User %s already mined" % str(screen_name))

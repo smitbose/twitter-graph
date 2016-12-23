@@ -13,7 +13,8 @@ USER_DIR = 'twitter-following'
 def store_friends(api, centre, following_names):
     while True:
         try:
-            print("The user currently being added/checked", centre)
+            logging.info("The user currently being added/checked", centre)
+            # trying to open a DB connection
             try:
                 conn = MySQLdb.connect("localhost", "root", "1234", "twitter_graph")
                 cursor = conn.cursor()
@@ -61,6 +62,6 @@ def store_friends(api, centre, following_names):
                                                                                                  "exceeded', " \
                                                                                                  "u'code': 88}]":
                 print('Rate limited. Sleeping for 15 minutes.')
-                logging.debug('Rate limit exceeded at %s' % str(datetime.now()))
+                logging.info('Rate limit exceeded at %s' % str(datetime.now()))
                 time.sleep(15 * 60 + 15)
         continue

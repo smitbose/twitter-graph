@@ -43,7 +43,7 @@ def get_following(api, centre, max_depth=3, curr_depth=0):
             if str(error) == "[{'message': 'Rate limit exceeded', 'code': 88}]" or str(
                     error) == "[{u'message': u'Rate limit exceeded', u'code': 88}]":
                 print('Rate limited. Sleeping for 15 minutes.')
-                logging.debug('Rate limit exceeded at %s' % str(datetime.now()))
+                logging.info('Rate limit exceeded at %s' % str(datetime.now()))
                 time.sleep(15 * 60 + 15)
         continue
 

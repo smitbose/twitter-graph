@@ -15,7 +15,7 @@ seed = []
 api = authenticate.start_auth()
 
 
-# create a
+# create a seed file
 def create_seed(init_file_name):
 
     if not os.path.exists(USER_DIR):
@@ -41,7 +41,7 @@ def create_seed(init_file_name):
     for line in f:
         # noinspection PyShadowingBuiltins
         id = line.split(' ', 1)[0].strip()
-        logging.info(str(id))
+        logging.info('User in seed file - %s' % str(id))
         seed.append(str(id))
     f.close()
     return seed
