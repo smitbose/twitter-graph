@@ -1,37 +1,40 @@
 import MySQLdb
 import json
 import time
-import following
 import os
 import tweepy
 import logging
 import datetime
+import sys
 
-USER_DIR = 'twitter-followings'
+USER_DIR = 'twitter-following'
 
 
-def minefriends(api, centre):
+def store_friends(api, centre, following_names):
     while True:
         try:
             print("The user currently being added/checked", centre)
-            conn = MySQLdb.connect("localhost", "root", "1234", "twitter_graph")
-            cursor = conn.cursor()
+            try:
+                conn = MySQLdb.connect("localhost", "root", "1234", "twitter_graph")
+                cursor = conn.cursor()
+            except:
+                print(sys.exc_info())
+                return
 
             userfname = os.path.join(USER_DIR, str(centre) + '.json')
             if not os.path.exists(userfname):
                 user = api.get_user(centre)
                 time.sleep(60)
-                sql_stmt = 'INSERT OR IGNORE INTO Politicians VALUES(%s,%s,%d)' % (
-                    str(user.screen_name), str(user.location), user.followers_count)
+                sql_stmt = 'INSERT IGNORE INTO politicians VALUES("%s","%s","%s",%d,"UNKNOWN")' % (
+                    str(user.screen_name), str(user.name), str(user.location), user.followers_count)
                 try:
                     cursor.execute(sql_stmt)
                     conn.commit()
-                except:
+                except MySQLdb.ProgrammingError as error:
+                    print(str(error))
                     conn.rollback()
 
                 conn.close()
-
-                following_names = following.get_following(api, centre)
 
                 d = {'name': user.name,
                      'screen_name': user.screen_name,

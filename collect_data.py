@@ -1,9 +1,7 @@
 import os
 import tweepy
 import time
-import sys
 import argparse
-import json
 import authenticate
 import following
 import mentions
@@ -52,19 +50,19 @@ def create_seed(init_file_name):
 def start_collection(depth):
     for account in seed:
         following.get_following(api, account, depth, 0)
-        mentions.get_mentions(api, account)
+        # mentions.get_mentions(api, account)
 
 
 if __name__ == '__main__':
     ap = argparse.ArgumentParser()
 
-    ap.add_argument('-f','--file',required=True,help='The file that contains the base accounts')
-    ap.add_argument('-d','--depth',required=True,help='The depth to which the following list will be mined')
+    ap.add_argument('-f', '--file', required=True, help='The file that contains the base accounts')
+    ap.add_argument('-d', '--depth', required=True, help='The depth to which the following list will be mined')
 
     args = vars(ap.parse_args())
 
     basefilename = args['file']
-    depth = args['depth']
+    depth = int(args['depth'])
 
     # initialize logger
     logging.basicConfig(filename='crawler_log.log', filemode='w', level=logging.DEBUG)

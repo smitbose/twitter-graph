@@ -2,14 +2,19 @@ import tweepy
 import time
 from datetime import datetime
 import logging
+import os
+import mentions
+import UserDB
 
 USER_DIR = 'twitter-following'
 
-def get_following(api, centre, max_depth=3, curr_depth=0):
 
-    if curr_depth >= max_depth and not str(centre).startswith('BJP4'):
+def get_following(api, centre, max_depth=3, curr_depth=0):
+    if (curr_depth >= max_depth) and (not str(centre).startswith('BJP4')):
         return
-    # TODO: set the exit condition if file exists
+    userfname = os.path.join(USER_DIR, str(centre) + ".json")
+    if os.path.exists(userfname):
+        return
     following = []
     while True:
         try:
@@ -20,7 +25,11 @@ def get_following(api, centre, max_depth=3, curr_depth=0):
                 following.append(friends.screen_name)
                 if i % 200 == 0:
                     time.sleep(60)
-                # TODO: call mentions from this function
+
+            for name in following:
+                get_following(api, name, max_depth, curr_depth+1)
+            UserDB.store_friends(api, centre, following)
+            mentions.get_mentions(api, centre)
             break
         except tweepy.TweepError as error:
             print(str(error))
