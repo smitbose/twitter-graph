@@ -10,11 +10,13 @@ USER_DIR = 'twitter-following'
 
 
 def get_following(api, centre, max_depth=3, curr_depth=0):
-    if (curr_depth >= max_depth) and (not str(centre).startswith('BJP4')):
+    if curr_depth > max_depth:
         return
     userfname = os.path.join(USER_DIR, str(centre) + ".json")
     if os.path.exists(userfname):
         return
+    logging.info("User being mined is %s" % str(centre))
+    print("User being mined %s" % str(centre))
     following = []
     while True:
         try:

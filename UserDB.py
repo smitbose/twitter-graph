@@ -13,13 +13,14 @@ USER_DIR = 'twitter-following'
 def store_friends(api, centre, following_names):
     while True:
         try:
-            logging.info("The user currently being added/checked", centre)
+            logging.info("The user currently being added/checked is %s" % centre)
             # trying to open a DB connection
             try:
-                conn = MySQLdb.connect("localhost", "root", "1234", "twitter_graph")
+                conn = MySQLdb.connect("localhost", "root", "1234", "twitter_graph", charset='utf8')
                 cursor = conn.cursor()
             except:
                 print(sys.exc_info())
+                logging.error(sys.exc_info())
                 return
 
             userfname = os.path.join(USER_DIR, str(centre) + '.json')
@@ -32,7 +33,7 @@ def store_friends(api, centre, following_names):
                     cursor.execute(sql_stmt)
                     conn.commit()
                 except MySQLdb.ProgrammingError as error:
-                    print(str(error))
+                    logging.debug(str(error))
                     conn.rollback()
 
                 conn.close()
